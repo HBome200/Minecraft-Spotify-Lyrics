@@ -1,0 +1,28 @@
+{
+  "stats": {
+    "minecraft:custom": {
+      "minecraft:time_since_rest": 6864,
+      "minecraft:walk_one_cm": 1056,
+      "minecraft:total_world_time": 6879,
+      "minecraft:leave_game": 1,
+      "minecraft:fly_one_cm": 16699,
+      "minecraft:crouch_one_cm": 109,
+      "minecraft:sneak_time": 971,
+      "minecraft:play_time": 6864,
+      "minecraft:jump": 8,
+      "minecraft:time_since_death": 6864
+    },
+    "minecraft:used": {
+      "minecraft:piston": 5,
+      "minecraft:sticky_piston": 10,
+      "minecraft:repeater": 2,
+      "minecraft:redstone_block": 2,
+      "minecraft:observer": 6,
+      "minecraft:note_block": 4,
+      "minecraft:target": 3,
+      "minecraft:redstone": 9,
+      "minecraft:red_concrete": 47
+    }
+  },
+  "DataVersion": 4903
+}
