@@ -13,3 +13,6 @@ out/
 
 # VS Code
 .vscode/
+
+#Minecraft Development
+run/
