@@ -12,7 +12,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 public class LyricsManager {
-
+    private final HttpClient client = HttpClient.newHttpClient();
     public List<LyricsLine> parseLyrics(String syncedLyrics) {
 
 
@@ -90,7 +90,7 @@ public class LyricsManager {
                 duration
         );
 
-        HttpClient client = HttpClient.newHttpClient();
+
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
