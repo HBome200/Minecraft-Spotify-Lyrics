@@ -2,8 +2,6 @@ package dev.along.spotifylyrics.backend;
 
 import org.freedesktop.dbus.connections.impl.DBusConnection;
 import org.freedesktop.dbus.connections.impl.DBusConnectionBuilder;
-import org.freedesktop.dbus.exceptions.DBusException;
-import org.freedesktop.dbus.interfaces.DBus;
 import org.freedesktop.dbus.interfaces.Properties;
 import org.freedesktop.dbus.types.UInt64;
 
@@ -11,15 +9,15 @@ import java.net.http.HttpResponse;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-public class SpotifyManager {
+public class LinuxMusicManager extends MusicManager {
 
     private DBusConnection connection;
-    private Properties properties;
+    private final Properties properties;
 
-    private List<LyricsLine> lyrics;
-    private LyricsManager lyricsManager;
+    private final List<LyricsLine> lyrics;
+    private final LyricsManager lyricsManager;
 
-    public SpotifyManager() throws Exception {
+    public LinuxMusicManager() throws Exception {
         try {
             connection = DBusConnectionBuilder
                     .forSessionBus()
@@ -73,6 +71,13 @@ public class SpotifyManager {
         long position = properties.Get("org.mpris.MediaPlayer2.Player", "Position");
         return position / 1000;
     }
+
+    @Override
+    public boolean isPlaying() {
+        String status = properties.Get("org.mpris.MediaPlayer2.Player", "PlaybackStatus");
+        return status.equals("Playing");
+    }
+
     public List<LyricsLine> getLyrics() {
         return lyrics;
     }
@@ -100,7 +105,7 @@ public class SpotifyManager {
         );
     }
     public String getArtist() {
-        return ((List<String>) getMetadata().get("xesam:artist")).get(0);
+        return ((List<String>) getMetadata().get("xesam:artist")).getFirst();
     }
     public String getTitle() {
         return (String) getMetadata().get("xesam:title");
