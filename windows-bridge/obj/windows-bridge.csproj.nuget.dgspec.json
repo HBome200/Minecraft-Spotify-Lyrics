@@ -1,31 +1,33 @@
 {
   "format": 1,
   "restore": {
-    "/home/along/Documents/SpotifyLyrics/windows-bridge/windows-bridge.csproj": {}
+    "C:\\Users\\along\\IdeaProjects\\Minecraft-Spotify-Lyrics\\windows-bridge\\windows-bridge.csproj": {}
   },
   "projects": {
-    "/home/along/Documents/SpotifyLyrics/windows-bridge/windows-bridge.csproj": {
+    "C:\\Users\\along\\IdeaProjects\\Minecraft-Spotify-Lyrics\\windows-bridge\\windows-bridge.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/along/Documents/SpotifyLyrics/windows-bridge/windows-bridge.csproj",
+        "projectUniqueName": "C:\\Users\\along\\IdeaProjects\\Minecraft-Spotify-Lyrics\\windows-bridge\\windows-bridge.csproj",
         "projectName": "windows-bridge",
-        "projectPath": "/home/along/Documents/SpotifyLyrics/windows-bridge/windows-bridge.csproj",
-        "packagesPath": "/home/along/.nuget/packages/",
-        "outputPath": "/home/along/Documents/SpotifyLyrics/windows-bridge/obj/",
+        "projectPath": "C:\\Users\\along\\IdeaProjects\\Minecraft-Spotify-Lyrics\\windows-bridge\\windows-bridge.csproj",
+        "packagesPath": "C:\\Users\\along\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\along\\IdeaProjects\\Minecraft-Spotify-Lyrics\\windows-bridge\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/along/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\along\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
-          "net10.0"
+          "net10.0-windows10.0.26100.0"
         ],
         "sources": {
-          "/usr/lib64/dotnet/library-packs": {},
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "net10.0": {
-            "targetAlias": "net10.0",
+          "net10.0-windows10.0.26100.0": {
+            "framework": "net10.0-windows10.0.26100",
+            "targetAlias": "net10.0-windows10.0.26100.0",
             "projectReferences": {}
           }
         },
@@ -39,11 +41,12 @@
           "auditLevel": "low",
           "auditMode": "all"
         },
-        "SdkAnalysisLevel": "10.0.100"
+        "SdkAnalysisLevel": "10.0.300"
       },
       "frameworks": {
-        "net10.0": {
-          "targetAlias": "net10.0",
+        "net10.0-windows10.0.26100.0": {
+          "framework": "net10.0-windows10.0.26100",
+          "targetAlias": "net10.0-windows10.0.26100.0",
           "dependencies": {
             "Microsoft.DotNet.ILCompiler": {
               "suppressParent": "All",
@@ -71,16 +74,39 @@
           "warn": true,
           "downloadDependencies": [
             {
-              "name": "runtime.linux-x64.Microsoft.DotNet.ILCompiler",
+              "name": "Microsoft.AspNetCore.App.Runtime.win-x64",
+              "version": "[10.0.10, 10.0.10]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Runtime.NativeAOT.win-x64",
+              "version": "[10.0.10, 10.0.10]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Runtime.win-x64",
+              "version": "[10.0.10, 10.0.10]"
+            },
+            {
+              "name": "Microsoft.Windows.SDK.NET.Ref",
+              "version": "[10.0.26100.57, 10.0.26100.57]"
+            },
+            {
+              "name": "Microsoft.WindowsDesktop.App.Runtime.win-x64",
+              "version": "[10.0.10, 10.0.10]"
+            },
+            {
+              "name": "runtime.win-x64.Microsoft.DotNet.ILCompiler",
               "version": "[10.0.10, 10.0.10]"
             }
           ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
+            },
+            "Microsoft.Windows.SDK.NET.Ref.Windows": {
+              "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/lib64/dotnet/sdk/10.0.110/PortableRuntimeIdentifierGraph.json",
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.302/PortableRuntimeIdentifierGraph.json",
           "packagesToPrune": {
             "Microsoft.CSharp": "(,4.7.32767]",
             "Microsoft.VisualBasic": "(,10.4.32767]",
@@ -355,6 +381,11 @@
             "System.Xml.XPath": "(,4.3.32767]",
             "System.Xml.XPath.XDocument": "(,5.0.32767]"
           }
+        }
+      },
+      "runtimes": {
+        "win-x64": {
+          "#import": []
         }
       }
     }

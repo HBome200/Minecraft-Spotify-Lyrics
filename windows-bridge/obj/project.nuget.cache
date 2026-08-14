@@ -1,12 +1,18 @@
 {
   "version": 2,
-  "dgSpecHash": "pdwYRcNdIBE=",
+  "dgSpecHash": "3TNewL4Ol3A=",
   "success": true,
-  "projectFilePath": "/home/along/Documents/SpotifyLyrics/windows-bridge/windows-bridge.csproj",
+  "projectFilePath": "C:\\Users\\along\\IdeaProjects\\Minecraft-Spotify-Lyrics\\windows-bridge\\windows-bridge.csproj",
   "expectedPackageFiles": [
-    "/home/along/.nuget/packages/microsoft.dotnet.ilcompiler/10.0.10/microsoft.dotnet.ilcompiler.10.0.10.nupkg.sha512",
-    "/home/along/.nuget/packages/microsoft.net.illink.tasks/10.0.10/microsoft.net.illink.tasks.10.0.10.nupkg.sha512",
-    "/home/along/.nuget/packages/runtime.linux-x64.microsoft.dotnet.ilcompiler/10.0.10/runtime.linux-x64.microsoft.dotnet.ilcompiler.10.0.10.nupkg.sha512"
+    "C:\\Users\\along\\.nuget\\packages\\microsoft.dotnet.ilcompiler\\10.0.10\\microsoft.dotnet.ilcompiler.10.0.10.nupkg.sha512",
+    "C:\\Users\\along\\.nuget\\packages\\microsoft.net.illink.tasks\\10.0.10\\microsoft.net.illink.tasks.10.0.10.nupkg.sha512",
+    "C:\\Users\\along\\.nuget\\packages\\runtime.win-x64.microsoft.dotnet.ilcompiler\\10.0.10\\runtime.win-x64.microsoft.dotnet.ilcompiler.10.0.10.nupkg.sha512",
+    "C:\\Users\\along\\.nuget\\packages\\microsoft.netcore.app.runtime.win-x64\\10.0.10\\microsoft.netcore.app.runtime.win-x64.10.0.10.nupkg.sha512",
+    "C:\\Users\\along\\.nuget\\packages\\microsoft.windowsdesktop.app.runtime.win-x64\\10.0.10\\microsoft.windowsdesktop.app.runtime.win-x64.10.0.10.nupkg.sha512",
+    "C:\\Users\\along\\.nuget\\packages\\microsoft.aspnetcore.app.runtime.win-x64\\10.0.10\\microsoft.aspnetcore.app.runtime.win-x64.10.0.10.nupkg.sha512",
+    "C:\\Users\\along\\.nuget\\packages\\microsoft.netcore.app.runtime.nativeaot.win-x64\\10.0.10\\microsoft.netcore.app.runtime.nativeaot.win-x64.10.0.10.nupkg.sha512",
+    "C:\\Users\\along\\.nuget\\packages\\runtime.win-x64.microsoft.dotnet.ilcompiler\\10.0.10\\runtime.win-x64.microsoft.dotnet.ilcompiler.10.0.10.nupkg.sha512",
+    "C:\\Users\\along\\.nuget\\packages\\microsoft.windows.sdk.net.ref\\10.0.26100.57\\microsoft.windows.sdk.net.ref.10.0.26100.57.nupkg.sha512"
   ],
   "logs": []
 }

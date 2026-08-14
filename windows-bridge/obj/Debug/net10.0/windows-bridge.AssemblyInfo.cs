@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("windows-bridge")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+874d0b05f7ff28a6e3940c15a594c6142689f8cb")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+daa5903c4c646ea961673cdf2f58db747356bfb9")]
 [assembly: System.Reflection.AssemblyProductAttribute("windows-bridge")]
 [assembly: System.Reflection.AssemblyTitleAttribute("windows-bridge")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
