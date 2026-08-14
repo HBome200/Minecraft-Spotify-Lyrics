@@ -1,0 +1,12 @@
+/home/along/Documents/SpotifyLyrics/windows-bridge/bin/Debug/net10.0/windows-bridge.deps.json
+/home/along/Documents/SpotifyLyrics/windows-bridge/bin/Debug/net10.0/windows-bridge.dll
+/home/along/Documents/SpotifyLyrics/windows-bridge/bin/Debug/net10.0/windows-bridge.pdb
+/home/along/Documents/SpotifyLyrics/windows-bridge/obj/Debug/net10.0/windows-bridge.GeneratedMSBuildEditorConfig.editorconfig
+/home/along/Documents/SpotifyLyrics/windows-bridge/obj/Debug/net10.0/windows-bridge.AssemblyInfoInputs.cache
+/home/along/Documents/SpotifyLyrics/windows-bridge/obj/Debug/net10.0/windows-bridge.AssemblyInfo.cs
+/home/along/Documents/SpotifyLyrics/windows-bridge/obj/Debug/net10.0/windows-bridge.csproj.CoreCompileInputs.cache
+/home/along/Documents/SpotifyLyrics/windows-bridge/obj/Debug/net10.0/windows-bridge.sourcelink.json
+/home/along/Documents/SpotifyLyrics/windows-bridge/obj/Debug/net10.0/windows-bridge.dll
+/home/along/Documents/SpotifyLyrics/windows-bridge/obj/Debug/net10.0/refint/windows-bridge.dll
+/home/along/Documents/SpotifyLyrics/windows-bridge/obj/Debug/net10.0/windows-bridge.pdb
+/home/along/Documents/SpotifyLyrics/windows-bridge/obj/Debug/net10.0/ref/windows-bridge.dll
