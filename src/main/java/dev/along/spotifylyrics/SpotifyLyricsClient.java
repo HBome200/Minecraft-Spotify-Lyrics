@@ -36,9 +36,13 @@ public class SpotifyLyricsClient implements ClientModInitializer {
             spotifyManager = new LinuxMusicManager();;
             lyricsManager = new LyricsManager();
         } catch (DBusException e) {
-            throw new RuntimeException(e);
+            System.err.println("Spotify lyrics, could not connect via DBus to Spotify");
+            spotifyManager = null;
+            lyricsManager = new LyricsManager();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            System.err.println("Spotify Lyrics: failed to initialize");
+            spotifyManager = null;
+            lyricsManager = new LyricsManager();
         }
         HudElementRegistry.attachElementAfter(
                 VanillaHudElements.CHAT,
@@ -54,11 +58,19 @@ public class SpotifyLyricsClient implements ClientModInitializer {
                 return;
             }
 
-            String track =
-                    spotifyManager.getArtist()
-                            + " - "
-                            + spotifyManager.getTitle();
+            String artist = spotifyManager.getArtist();
+            String title = spotifyManager.getTitle();
 
+            if (artist == null || artist.isBlank()
+                    || title == null || title.isBlank()) {
+                return;
+            }
+
+            String track = artist + " - " + title;
+
+            if (lyrics == null || lyrics.isEmpty()) {
+                return;
+            }
             if (!track.equals(currentTrack)) {
                 currentTrack = track;
 
@@ -90,9 +102,7 @@ public class SpotifyLyricsClient implements ClientModInitializer {
                 return;
             }
 
-            if (lyrics == null || lyrics.isEmpty()) {
-                return;
-            }
+
 
 
             long position = spotifyManager.getPosition();
