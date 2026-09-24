@@ -37,7 +37,7 @@ public class SpotifyLyricsClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         try {
-            spotifyManager = new LinuxMusicManager();;
+            spotifyManager = new LinuxMusicManager();
             lyricsManager = new LyricsManager();
         } catch (DBusException e) {
             System.err.println("Spotify lyrics, could not connect via DBus to Spotify");
@@ -68,6 +68,7 @@ public class SpotifyLyricsClient implements ClientModInitializer {
                     isOpen = dbus.NameHasOwner(targetSessionService);
                     if (isOpen) {
                         spotifyManager = new LinuxMusicManager();
+                        System.out.println("Created Spotify manager");
                     }
                 } catch (DBusException | IOException e) {
 
