@@ -3,6 +3,7 @@
 	"id": "spotify-lyrics",
 	"version": "${version}",
 	"name": "Spotify Lyrics",
+	"icon": "mod_icon.png",
 	"description": "Minecraft Spotify Lyrics is a client-side Fabric mod that brings synchronized Spotify lyrics directly into Minecraft. It automatically detects the currently playing song, fetches synchronized lyrics, and displays the previous, current, and upcoming lines in the Minecraft HUD as the song plays. The mod currently supports Linux only and uses D-Bus to communicate with Spotify.",
 	"authors": [
 		"Me!"
