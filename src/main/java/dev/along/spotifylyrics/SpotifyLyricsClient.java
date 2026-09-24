@@ -11,8 +11,12 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.resources.Identifier;
+import org.freedesktop.dbus.connections.impl.DBusConnection;
+import org.freedesktop.dbus.connections.impl.DBusConnectionBuilder;
 import org.freedesktop.dbus.exceptions.DBusException;
+import org.freedesktop.dbus.interfaces.DBus;
 
+import java.io.IOException;
 import java.net.http.HttpResponse;
 import java.util.List;
 
@@ -54,12 +58,35 @@ public class SpotifyLyricsClient implements ClientModInitializer {
         );
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
 
-            if (spotifyManager == null) {
-                return;
+
+            boolean isOpen = !(spotifyManager == null);
+            if (!isOpen) {
+                String targetSessionService = "org.mpris.MediaPlayer2.spotify";
+
+                try (DBusConnection connection = DBusConnectionBuilder.forSessionBus().build()) {
+                    DBus dbus = connection.getRemoteObject("org.freedesktop.DBus", "/", DBus.class);
+                    isOpen = dbus.NameHasOwner(targetSessionService);
+                    if (isOpen) {
+                        spotifyManager = new LinuxMusicManager();
+                    }
+                } catch (DBusException | IOException e) {
+
+                } catch (Exception e) {
+                    System.err.println("Spotify lyrics, could not connect via DBus to Spotify");
+
+                }
             }
 
-            String artist = spotifyManager.getArtist();
-            String title = spotifyManager.getTitle();
+            String artist;
+            String title;
+            try {
+                artist = spotifyManager.getArtist();
+                title = spotifyManager.getTitle();
+            } catch (Exception e) {
+                clearLyrics();
+                currentTrack = "";
+                return;
+            }
 
             if (artist == null || artist.isBlank()
                     || title == null || title.isBlank()) {
@@ -68,9 +95,6 @@ public class SpotifyLyricsClient implements ClientModInitializer {
 
             String track = artist + " - " + title;
 
-            if (lyrics == null || lyrics.isEmpty()) {
-                return;
-            }
             if (!track.equals(currentTrack)) {
                 currentTrack = track;
 
@@ -81,8 +105,8 @@ public class SpotifyLyricsClient implements ClientModInitializer {
 
                 try {
                     HttpResponse<String> response = lyricsManager.fetchLyrics(
-                            spotifyManager.getArtist(),
-                            spotifyManager.getTitle(),
+                            artist,
+                            title,
                             spotifyManager.getAlbum(),
                             spotifyManager.getDuration()
                     );
@@ -102,7 +126,9 @@ public class SpotifyLyricsClient implements ClientModInitializer {
                 return;
             }
 
-
+            if (lyrics == null || lyrics.isEmpty()) {
+                return;
+            }
 
 
             long position = spotifyManager.getPosition();
@@ -142,10 +168,8 @@ public class SpotifyLyricsClient implements ClientModInitializer {
                                 + current.getText()
                 );
             }
-        });
-
-    }
-
+        })
+    ;}
     private static void renderLyrics(
             GuiGraphicsExtractor graphics,
             DeltaTracker deltaTracker
