@@ -1,8 +1,6 @@
 package dev.along.spotifylyrics;
 
-import dev.along.spotifylyrics.backend.LinuxMusicManager;
-import dev.along.spotifylyrics.backend.LyricsLine;
-import dev.along.spotifylyrics.backend.LyricsManager;
+import dev.along.spotifylyrics.backend.*;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
@@ -25,7 +23,7 @@ public class SpotifyLyricsClient implements ClientModInitializer {
     private static final int MARGIN = 15;
     private static final int LINE_SPACING = 18;
     private static LyricsLine currentLine;
-    private static LinuxMusicManager spotifyManager;
+    private static MusicManager spotifyManager;
     private static LyricsManager lyricsManager;
     private static List<LyricsLine> lyrics;
     private static String currentTrack = "";
@@ -33,7 +31,13 @@ public class SpotifyLyricsClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         try {
-            spotifyManager = new LinuxMusicManager();;
+            String osName = System.getProperty("os.name").toLowerCase();
+            if(osName.contains("win")) {
+                spotifyManager = new WindowsMusicManager();
+            }
+            else if(osName.contains("nix")) {
+                spotifyManager = new LinuxMusicManager();
+            }
             lyricsManager = new LyricsManager();
         } catch (DBusException e) {
             throw new RuntimeException(e);

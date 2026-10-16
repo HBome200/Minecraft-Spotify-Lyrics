@@ -7,9 +7,11 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
-    <PublishAot>true</PublishAot>
+    <PublishAot>false</PublishAot>
     <NativeLib>Shared</NativeLib>
     <SelfContained>true</SelfContained>
+    <OutputPath>bin\debug\</OutputPath>
+    <OutputType>Exe</OutputType>
   </PropertyGroup>
 
 </Project>

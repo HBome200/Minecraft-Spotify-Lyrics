@@ -1,27 +1,30 @@
-﻿using Windows.Media.Control;
+﻿using System;
+using System.Threading.Tasks;
+using Windows.Media.Control;
 
-namespace SpotifyLyricsBridge;
-
-public static class SpotifyBridge
+namespace SpotifyBridge
 {
-    public static async Task TestAsync()
+    public static class Program
     {
-        var manager =
-            await GlobalSystemMediaTransportControlsSessionManager.RequestAsync();
-
-        var session = manager.GetCurrentSession();
-
-        if (session == null)
+        public static async Task Main(string[] args)
         {
-            Console.WriteLine("No current media session.");
-            return;
+            var manager = await GlobalSystemMediaTransportControlsSessionManager.RequestAsync();
+
+            while (true)
+            {
+                var session = manager.GetCurrentSession();
+                if (session != null)
+                {
+                    var props = await session.TryGetMediaPropertiesAsync();
+                    var timeline = session.GetTimelineProperties();
+                    var playbackInfo = session.GetPlaybackInfo();
+
+                    // Outputs the pipe-delimited data for your Java mod to parse
+                    Console.WriteLine($"TITLE:{props.Title}|ARTIST:{props.Artist}|POSITION:{timeline.Position.Ticks}|DURATION:{timeline.EndTime.Ticks}|ALBUM:{props.AlbumTitle}|PLAYBACK STATUS:{playbackInfo.PlaybackStatus}");
+                }
+
+                await Task.Delay(1000);
+            }
         }
-
-        var props = await session.TryGetMediaPropertiesAsync();
-
-        Console.WriteLine($"App:    {session.SourceAppUserModelId}");
-        Console.WriteLine($"Artist: {props.Artist}");
-        Console.WriteLine($"Title:  {props.Title}");
-        Console.WriteLine($"Album:  {props.AlbumTitle}");
     }
 }

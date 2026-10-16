@@ -90,10 +90,9 @@ public class LyricsManager {
                 duration
         );
 
-
-
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
+                .header("User-Agent", "MinecraftSpotifyLyricsMod/1.0 (your_email@example.com)") // Added User-Agent header
                 .GET()
                 .build();
 
@@ -102,6 +101,7 @@ public class LyricsManager {
                 HttpResponse.BodyHandlers.ofString()
         );
     }
+
     public String getSyncedLyrics(HttpResponse<String> response) {
         JsonObject json =
                 JsonParser.parseString(response.body()).getAsJsonObject();
