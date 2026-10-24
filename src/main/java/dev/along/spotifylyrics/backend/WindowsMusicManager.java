@@ -1,89 +1,81 @@
+
 package dev.along.spotifylyrics.backend;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.http.HttpResponse;
-import java.util.List;
 
+public final class WindowsMusicManager extends MusicManager
+        implements AutoCloseable {
 
-public class WindowsMusicManager extends MusicManager {
-    private static String artist;
-    private static String album;
-    private static String title;
-    private static long duration;
-    private static long position;
-    private static String playbackStatus = "STOPPED";
+    private volatile String artist = "";
+    private volatile String album = "";
+    private volatile String title = "";
+    private volatile long duration;
+    private volatile long position;
+    private volatile boolean playing;
 
-    private static LyricsManager lyricsManager;
-    private static List<LyricsLine> lyrics;
-    private static boolean initialFetchDone = false;
+    private volatile boolean running = true;
+    private final Thread worker;
 
-    public WindowsMusicManager() throws Exception {
-        Thread bridgeThread = new Thread(WindowsMusicManager::startBridge);
-        bridgeThread.setDaemon(true);
-        bridgeThread.start();
+    private volatile long positionCapturedNanos = System.nanoTime();
+
+    public WindowsMusicManager() {
+        worker = new Thread(this::runWorker, "Spotify-Lyrics-Windows-Media");
+        worker.setDaemon(true);
+        worker.start();
     }
 
-    public static void startBridge() {
-        try {
-            ProcessBuilder builder = new ProcessBuilder("C:\\along-bridge\\windows-bridge.exe");
-            builder.redirectErrorStream(true);
-            Process process = builder.start();
+    private void runWorker() {
+        // IMPORTANT: open, use, and close the session on this same thread.
+        while (running) {
+            try (WindowsMediaSession media = WindowsMediaSession.open()) {
+                while (running) {
+                    try {
+                        if (!media.refreshSession()) {
+                            Thread.sleep(1000);
+                            continue;
+                        }
 
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                parseSpotifyData(line);
+                        String newArtist = media.getArtist();
+                        String newTitle = media.getTitle();
+                        String newAlbum = media.getAlbum();
+                        boolean newPlaying = media.isPlaying();
+                        long newDuration = media.getDurationMs();
+                        long newPosition = media.getPositionMs(newPlaying);
+
+                        artist = newArtist;
+                        title = newTitle;
+                        album = newAlbum;
+                        duration = newDuration;
+                        position = newPosition;
+                        positionCapturedNanos = System.nanoTime();
+                        playing = newPlaying;
+                    } catch (Throwable e) {
+                        // Keep the last valid snapshot if a read fails.
+                        System.err.println(
+                                "[Spotify Lyrics] Windows media read failed: "
+                                        + e.getMessage()
+                        );
+                    }
+
+                    Thread.sleep(250);
+                }
+            } catch (InterruptedException e) {
+                if (!running) {
+                    break;
+                }
+            } catch (Throwable e) {
+                if (running) {
+                    System.err.println(
+                            "[Spotify Lyrics] Windows media initialization failed: "
+                                    + e.getMessage()
+                    );
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException interrupted) {
+                        if (!running) {
+                            break;
+                        }
+                    }
+                }
             }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private static void parseSpotifyData(String data) {
-        try {
-            if (data == null || !data.contains("|")) {
-                System.out.println("Bridge Output: " + data);
-                return;
-            }
-
-            String[] lines = data.split("\\|");
-            if (lines.length < 6) {
-                return;
-            }
-            title = lines[0].replaceAll("TITLE:", "");
-            artist = lines[1].replaceAll("ARTIST:", "");
-            duration = Long.parseLong(lines[3].replaceAll("DURATION:", "")) / 1_000_000;
-            position = Long.parseLong(lines[2].replaceAll("POSITION:", "")) / 1000;
-            album = lines[4].replaceAll("ALBUM:", "");
-            playbackStatus = lines[5].replaceAll("PLAYBACK STATUS:", "");
-
-            if (!initialFetchDone && title != null && !title.isEmpty()) {
-                initialFetchDone = true;
-                System.out.println("Artist: " + artist);
-                System.out.println("Title: " + title);
-                System.out.println("Album: " + album);
-                System.out.println("Duration: " + duration);
-                System.out.println("Position: " + position);
-                System.out.println("Playback Status: " + playbackStatus);
-
-                lyricsManager = new LyricsManager();
-
-                HttpResponse<String> response =
-                        lyricsManager.fetchLyrics(artist, title, album, duration);
-
-                String syncedLyrics =
-                        lyricsManager.getSyncedLyrics(response);
-                System.out.println("SYNCED LYRICS IS NULL: " + (syncedLyrics == null));
-                System.out.println("SYNCED LYRICS: " + syncedLyrics);
-
-                lyrics = lyricsManager.parseLyrics(syncedLyrics);
-
-                System.out.println("HTTP status: " + response.statusCode());
-                System.out.println("Lyrics lines: " + (lyrics != null ? lyrics.size() : 0));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
@@ -104,42 +96,35 @@ public class WindowsMusicManager extends MusicManager {
 
     @Override
     public long getDuration() {
-        return duration;
+        return duration / 1000;
     }
 
     @Override
     public long getPosition() {
-        return position;
+        long current = position;
+
+        if (playing) {
+            long elapsedMs =
+                    (System.nanoTime() - positionCapturedNanos) / 1_000_000L;
+            current += Math.max(0L, elapsedMs);
+        }
+
+        long currentDuration = duration;
+        if (currentDuration > 0) {
+            current = Math.min(current, currentDuration);
+        }
+
+        return Math.max(0L, current);
     }
 
     @Override
     public boolean isPlaying() {
-        return playbackStatus.equals("PLAYING");
+        return playing;
     }
-    public List<LyricsLine> getLyrics() {
-        return lyrics;
-    }
-    public LyricsLine getCurrentLine(
-            List<LyricsLine> lyrics,
-            long position
-    ) {
-        LyricsLine current = null;
 
-        for (LyricsLine line : lyrics) {
-            if (line.getTimeStamp() <= position) {
-                current = line;
-            } else {
-                break;
-            }
-        }
-
-        return current;
-    }
-    public LyricsLine getCurrentLine() {
-        long position = getPosition() / 1000;
-        return lyricsManager.getCurrentLine(
-                lyrics,
-                position
-        );
+    @Override
+    public void close() {
+        running = false;
+        worker.interrupt();
     }
 }

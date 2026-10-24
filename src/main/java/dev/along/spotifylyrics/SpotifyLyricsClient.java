@@ -9,8 +9,12 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.resources.Identifier;
+import org.freedesktop.dbus.connections.impl.DBusConnection;
+import org.freedesktop.dbus.connections.impl.DBusConnectionBuilder;
 import org.freedesktop.dbus.exceptions.DBusException;
+import org.freedesktop.dbus.interfaces.DBus;
 
+import java.io.IOException;
 import java.net.http.HttpResponse;
 import java.util.List;
 
@@ -32,17 +36,28 @@ public class SpotifyLyricsClient implements ClientModInitializer {
     public void onInitializeClient() {
         try {
             String osName = System.getProperty("os.name").toLowerCase();
-            if(osName.contains("win")) {
+
+            if (osName.contains("win")) {
                 spotifyManager = new WindowsMusicManager();
-            }
-            else if(osName.contains("nix")) {
+            } else if (osName.contains("linux") || osName.contains("nix")
+                    || osName.contains("nux") || osName.contains("mac")) {
                 spotifyManager = new LinuxMusicManager();
+            } else {
+                throw new UnsupportedOperationException(
+                        "Unsupported operating system: " + osName
+                );
             }
+
+            lyricsManager = new LyricsManager();
             lyricsManager = new LyricsManager();
         } catch (DBusException e) {
-            throw new RuntimeException(e);
+            System.err.println("Spotify lyrics, could not connect via DBus to Spotify");
+            spotifyManager = null;
+            lyricsManager = new LyricsManager();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            System.err.println("Spotify Lyrics: failed to initialize");
+            spotifyManager = null;
+            lyricsManager = new LyricsManager();
         }
         HudElementRegistry.attachElementAfter(
                 VanillaHudElements.CHAT,
@@ -54,14 +69,43 @@ public class SpotifyLyricsClient implements ClientModInitializer {
         );
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
 
-            if (spotifyManager == null) {
+
+            /*boolean isOpen = !(spotifyManager == null);
+            if (!isOpen) {
+                String targetSessionService = "org.mpris.MediaPlayer2.spotify";
+
+                try (DBusConnection connection = DBusConnectionBuilder.forSessionBus().build()) {
+                    DBus dbus = connection.getRemoteObject("org.freedesktop.DBus", "/", DBus.class);
+                    isOpen = dbus.NameHasOwner(targetSessionService);
+                    if (isOpen) {
+                        spotifyManager = new LinuxMusicManager();
+                        System.out.println("Created Spotify manager");
+                    }
+                } catch (DBusException | IOException e) {
+
+                } catch (Exception e) {
+                    System.err.println("Spotify lyrics, could not connect via DBus to Spotify");
+
+                }
+            }
+            */
+            String artist;
+            String title;
+            try {
+                artist = spotifyManager.getArtist();
+                title = spotifyManager.getTitle();
+            } catch (Exception e) {
+                clearLyrics();
+                currentTrack = "";
                 return;
             }
 
-            String track =
-                    spotifyManager.getArtist()
-                            + " - "
-                            + spotifyManager.getTitle();
+            if (artist == null || artist.isBlank()
+                    || title == null || title.isBlank()) {
+                return;
+            }
+
+            String track = artist + " - " + title;
 
             if (!track.equals(currentTrack)) {
                 currentTrack = track;
@@ -73,8 +117,8 @@ public class SpotifyLyricsClient implements ClientModInitializer {
 
                 try {
                     HttpResponse<String> response = lyricsManager.fetchLyrics(
-                            spotifyManager.getArtist(),
-                            spotifyManager.getTitle(),
+                            artist,
+                            title,
                             spotifyManager.getAlbum(),
                             spotifyManager.getDuration()
                     );
@@ -136,10 +180,8 @@ public class SpotifyLyricsClient implements ClientModInitializer {
                                 + current.getText()
                 );
             }
-        });
-
-    }
-
+        })
+    ;}
     private static void renderLyrics(
             GuiGraphicsExtractor graphics,
             DeltaTracker deltaTracker

@@ -43,14 +43,26 @@ public class LyricsManager {
                 long seconds =
                         Long.parseLong(secondParts[0]);
 
-                long hundredths =
-                        secondParts.length > 1
-                                ? Long.parseLong(secondParts[1])
-                                : 0;
+
+                String fraction = secondParts.length > 1
+                        ? secondParts[1]
+                        : "";
+
+                if (fraction.length() == 1) {
+                    fraction += "00";
+                } else if (fraction.length() == 2) {
+                    fraction += "0";
+                } else if (fraction.length() > 3) {
+                    fraction = fraction.substring(0, 3);
+                }
+
+                long milliseconds = fraction.isEmpty()
+                        ? 0
+                        : Long.parseLong(fraction);
 
                 long timestamp =
-                        (minutes * 60 + seconds) * 1000
-                                + hundredths * 10;
+                        (minutes * 60 + seconds) * 1000 + milliseconds;
+
 
                 lyrics.add(new LyricsLine(timestamp, text));
             }
@@ -65,7 +77,7 @@ public class LyricsManager {
             String album,
             long duration
     ) {
-        return "https://lrclib.net/api/get?"
+        String url = "https://lrclib.net/api/get?"
                 + "artist_name="
                 + URLEncoder.encode(artist, StandardCharsets.UTF_8)
                 + "&track_name="
@@ -74,6 +86,8 @@ public class LyricsManager {
                 + URLEncoder.encode(album, StandardCharsets.UTF_8)
                 + "&duration="
                 + duration;
+        System.out.println(url);
+        return url;
     }
 
     public HttpResponse<String> fetchLyrics(
