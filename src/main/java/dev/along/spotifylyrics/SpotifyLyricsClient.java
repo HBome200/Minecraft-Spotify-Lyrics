@@ -31,11 +31,12 @@ public class SpotifyLyricsClient implements ClientModInitializer {
     private static LyricsManager lyricsManager;
     private static List<LyricsLine> lyrics;
     private static String currentTrack = "";
+    String osName;
 
     @Override
     public void onInitializeClient() {
         try {
-            String osName = System.getProperty("os.name").toLowerCase();
+            osName = System.getProperty("os.name").toLowerCase();
 
             if (osName.contains("win")) {
                 spotifyManager = new WindowsMusicManager();
@@ -69,26 +70,27 @@ public class SpotifyLyricsClient implements ClientModInitializer {
         );
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
 
+            if(osName.contains("nix")) {
+                boolean isOpen = !(spotifyManager == null);
+                if (!isOpen) {
+                    String targetSessionService = "org.mpris.MediaPlayer2.spotify";
 
-            /*boolean isOpen = !(spotifyManager == null);
-            if (!isOpen) {
-                String targetSessionService = "org.mpris.MediaPlayer2.spotify";
+                    try (DBusConnection connection = DBusConnectionBuilder.forSessionBus().build()) {
+                        DBus dbus = connection.getRemoteObject("org.freedesktop.DBus", "/", DBus.class);
+                        isOpen = dbus.NameHasOwner(targetSessionService);
+                        if (isOpen) {
+                            spotifyManager = new LinuxMusicManager();
+                            System.out.println("Created Spotify manager");
+                        }
+                    } catch (DBusException | IOException e) {
 
-                try (DBusConnection connection = DBusConnectionBuilder.forSessionBus().build()) {
-                    DBus dbus = connection.getRemoteObject("org.freedesktop.DBus", "/", DBus.class);
-                    isOpen = dbus.NameHasOwner(targetSessionService);
-                    if (isOpen) {
-                        spotifyManager = new LinuxMusicManager();
-                        System.out.println("Created Spotify manager");
+                    } catch (Exception e) {
+                        System.err.println("Spotify lyrics, could not connect via DBus to Spotify");
+
                     }
-                } catch (DBusException | IOException e) {
-
-                } catch (Exception e) {
-                    System.err.println("Spotify lyrics, could not connect via DBus to Spotify");
-
                 }
             }
-            */
+
             String artist;
             String title;
             try {
